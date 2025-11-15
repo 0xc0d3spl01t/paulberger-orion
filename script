@@ -4,61 +4,60 @@ function Orion:CreateOrion(orionName)
     orionName = orionName or "Orion"
     local isClosed = false
     
-    -- Startup Screen mit Bild
+    -- Startup Screen Instances
     local StartupGui = Instance.new("ScreenGui")
     local StartupFrame = Instance.new("Frame")
     local StartupImage = Instance.new("ImageLabel")
     local StartupCorner = Instance.new("UICorner")
     
+    StartupGui.Name = "StartupGui"
     StartupGui.Parent = game.CoreGui
     StartupGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-    StartupGui.Name = "PaulbergerStartup"
     
     StartupFrame.Name = "StartupFrame"
     StartupFrame.Parent = StartupGui
-    StartupFrame.BackgroundColor3 = Color3.fromRGB(10, 10, 15)
-    StartupFrame.BorderSizePixel = 0
-    StartupFrame.Position = UDim2.new(0.5, -200, 0.5, -200)
-    StartupFrame.Size = UDim2.new(0, 400, 0, 400)
-    
-    StartupCorner.CornerRadius = UDim.new(0, 10)
-    StartupCorner.Parent = StartupFrame
+    StartupFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    StartupFrame.BackgroundTransparency = 0
+    StartupFrame.Size = UDim2.new(1, 0, 1, 0)
+    StartupFrame.Position = UDim2.new(0, 0, 0, 0)
     
     StartupImage.Name = "StartupImage"
     StartupImage.Parent = StartupFrame
     StartupImage.BackgroundTransparency = 1
-    StartupImage.Position = UDim2.new(0.05, 0, 0.05, 0)
-    StartupImage.Size = UDim2.new(0.9, 0, 0.9, 0)
-    StartupImage.Image = "https://pipah.de/media/image/product/17261/lg/paulberger-limo-bubblegum-330ml.jpg"
-    StartupImage.ScaleType = Enum.ScaleType.Fit
+    StartupImage.AnchorPoint = Vector2.new(0.5, 0.5)
+    StartupImage.Position = UDim2.new(0.5, 0, 0.5, 0)
+    StartupImage.Size = UDim2.new(0, 400, 0, 400)
+    StartupImage.Image = "rbxassetid://99766003110670"
+    StartupImage.ImageTransparency = 1
     
-    -- Hintergrundmusik mit korrekter SoundId
-    local Sound = Instance.new("Sound")
-    Sound.Parent = game:GetService("SoundService")
-    Sound.Name = "PaulbergerMusic"
+    StartupCorner.CornerRadius = UDim.new(0, 10)
+    StartupCorner.Parent = StartupImage
     
-    -- Versuche die Musik zu laden
-    local success, err = pcall(function()
-        local HttpService = game:GetService("HttpService")
-        -- Roblox unterstützt keine direkten MP3 Links, wir müssen einen Roblox Asset verwenden
-        -- Alternativ: Lade die Musik auf Roblox hoch und nutze die Asset ID
-        Sound.SoundId = "rbxassetid://1848354536" -- Placeholder - ersetze mit deiner hochgeladenen Musik
-        Sound.Volume = 0.3
-        Sound.Looped = true
-        Sound:Play()
-    end)
+    -- Background Music
+    local BackgroundMusic = Instance.new("Sound")
+    BackgroundMusic.Name = "BackgroundMusic"
+    BackgroundMusic.SoundId = "rbxassetid://96483370991455"
+    BackgroundMusic.Volume = 0.3
+    BackgroundMusic.Looped = true
+    BackgroundMusic.Parent = game:GetService("SoundService")
+    BackgroundMusic:Play()
     
-    if not success then
-        warn("Musik konnte nicht geladen werden:", err)
-    end
+    -- Startup Animation
+    game.TweenService:Create(StartupImage, TweenInfo.new(1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+        ImageTransparency = 0
+    }):Play()
     
-    -- Fade out startup nach 3 Sekunden
-    task.wait(3)
-    for i = 1, 10 do
-        StartupFrame.BackgroundTransparency = i / 10
-        StartupImage.ImageTransparency = i / 10
-        task.wait(0.05)
-    end
+    wait(3)
+    
+    game.TweenService:Create(StartupImage, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+        ImageTransparency = 1
+    }):Play()
+    
+    game.TweenService:Create(StartupFrame, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+        BackgroundTransparency = 1
+    }):Play()
+    
+    wait(0.5)
     StartupGui:Destroy()
     
     local ScreenGui = Instance.new("ScreenGui")
@@ -77,8 +76,6 @@ function Orion:CreateOrion(orionName)
     local mainCorner_5 = Instance.new("UICorner")
     local mainList = Instance.new("UIListLayout")
     local pagesFolder = Instance.new("Folder")
-    
-    -- PAULBERGER QUALI Label (ersetzt User/Premium Label)
     local footerLabel = Instance.new("TextLabel")
 
     
@@ -116,7 +113,7 @@ function Orion:CreateOrion(orionName)
 
     MainWhiteFrame.Name = "MainWhiteFrame"
     MainWhiteFrame.Parent = ScreenGui
-    MainWhiteFrame.BackgroundColor3 = Color3.fromRGB(0, 100, 200) -- BLAU statt ROT
+    MainWhiteFrame.BackgroundColor3 = Color3.fromRGB(0, 85, 255)
     MainWhiteFrame.BorderSizePixel = 0
     MainWhiteFrame.ClipsDescendants = true
     MainWhiteFrame.Position = UDim2.new(0.236969739, 0, 0.360436916, 0)
@@ -155,25 +152,10 @@ function Orion:CreateOrion(orionName)
     tabPadd.Parent = tabFrame
     tabPadd.PaddingRight = UDim.new(0, 2)
     tabPadd.PaddingTop = UDim.new(0, 5)
-    tabPadd.PaddingBottom = UDim.new(0, 30) -- Platz für PAULBERGER QUALI Label
-
-    -- PAULBERGER QUALI Label unten links
-    footerLabel.Name = "footerLabel"
-    footerLabel.Parent = tabFrame
-    footerLabel.BackgroundColor3 = Color3.fromRGB(0, 80, 160) -- Dunkleres Blau
-    footerLabel.BorderSizePixel = 0
-    footerLabel.Position = UDim2.new(0, 0, 1, -25)
-    footerLabel.Size = UDim2.new(1, 0, 0, 25)
-    footerLabel.Font = Enum.Font.GothamBold
-    footerLabel.Text = "PAULBERGER QUALI"
-    footerLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    footerLabel.TextSize = 11
-    footerLabel.TextScaled = false
-    footerLabel.ZIndex = 10
 
     header.Name = "header"
     header.Parent = MainWhiteFrame_2
-    header.BackgroundColor3 = Color3.fromRGB(30, 120, 220) -- BLAU statt ROT
+    header.BackgroundColor3 = Color3.fromRGB(0, 100, 255)
     header.Position = UDim2.new(0.207619041, 0, 0.0258064512, 0)
     header.Size = UDim2.new(0, 408, 0, 43)
 
@@ -245,6 +227,19 @@ function Orion:CreateOrion(orionName)
     mainList.SortOrder = Enum.SortOrder.LayoutOrder
 
     pagesFolder.Parent = elementContainer
+    
+    -- Footer Label "PAULBERGER QUALITÄT"
+    footerLabel.Name = "footerLabel"
+    footerLabel.Parent = tabFrame
+    footerLabel.BackgroundColor3 = Color3.fromRGB(33, 33, 33)
+    footerLabel.BorderSizePixel = 0
+    footerLabel.Position = UDim2.new(0, 0, 0.95, 0)
+    footerLabel.Size = UDim2.new(1, 0, 0, 15)
+    footerLabel.Font = Enum.Font.GothamBold
+    footerLabel.Text = "PAULBERGER QUALITÄT"
+    footerLabel.TextColor3 = Color3.fromRGB(0, 150, 255)
+    footerLabel.TextSize = 9
+    footerLabel.TextXAlignment = Enum.TextXAlignment.Center
 
     local SectionHandler = {}
 
@@ -284,7 +279,7 @@ function Orion:CreateOrion(orionName)
         newPage.BorderSizePixel = 0
         newPage.Size = UDim2.new(1, 0, 1, 0)
         newPage.ScrollBarThickness = 5
-        newPage.ScrollBarImageColor3 = Color3.fromRGB(30, 120, 220) -- BLAU statt ROT
+        newPage.ScrollBarImageColor3 = Color3.fromRGB(0, 120, 255)
         newPage.Visible = false
 
         pageItemList.Name = "pageItemList"
@@ -326,7 +321,7 @@ function Orion:CreateOrion(orionName)
                 end
             end
             game.TweenService:Create(tabBtn, TweenInfo.new(0.18, Enum.EasingStyle.Quint, Enum.EasingDirection.Out),{
-                BackgroundColor3 = Color3.fromRGB(0, 100, 200) -- BLAU statt ROT
+                BackgroundColor3 = Color3.fromRGB(0, 85, 200)
             }):Play()
         end)
 
@@ -383,7 +378,7 @@ function Orion:CreateOrion(orionName)
             mainCorner.Parent = textButtonFrame
 
             TextButton.Parent = textButtonFrame
-            TextButton.BackgroundColor3 = Color3.fromRGB(30, 120, 220) -- BLAU statt ROT
+            TextButton.BackgroundColor3 = Color3.fromRGB(0, 100, 255)
             TextButton.Position = UDim2.new(0.017766498, 0, 0.166666672, 0)
             TextButton.Size = UDim2.new(0, 141, 0, 27)
             TextButton.Font = Enum.Font.GothamSemibold
@@ -452,7 +447,7 @@ function Orion:CreateOrion(orionName)
 
                 toggleInerFrame.Name = "toggleInerFrame"
                 toggleInerFrame.Parent = toggleFrame
-                toggleInerFrame.BackgroundColor3 = Color3.fromRGB(30, 120, 220) -- BLAU statt ROT
+                toggleInerFrame.BackgroundColor3 = Color3.fromRGB(0, 100, 255)
                 toggleInerFrame.Position = UDim2.new(0.0177664906, 0, 0.166666672, 0)
                 toggleInerFrame.Size = UDim2.new(0, 27, 0, 27)
 
@@ -501,7 +496,7 @@ function Orion:CreateOrion(orionName)
                     callback(toggled)
                     if toggled then
                         game.TweenService:Create(toggleBtn, TweenInfo.new(0.18, Enum.EasingStyle.Quint, Enum.EasingDirection.Out),{
-                            BackgroundColor3 = Color3.fromRGB(30, 120, 220) -- BLAU statt ROT
+                            BackgroundColor3 = Color3.fromRGB(0, 100, 255)
                         }):Play()
                     else
                         game.TweenService:Create(toggleBtn, TweenInfo.new(0.18, Enum.EasingStyle.Quint, Enum.EasingDirection.Out),{
@@ -558,7 +553,7 @@ function Orion:CreateOrion(orionName)
                     sliderValue.Size = UDim2.new(0, 68, 0, 17)
                     sliderValue.Font = Enum.Font.GothamSemibold
                     sliderValue.Text = minvalue.."/"..maxvalue
-                    sliderValue.TextColor3 = Color3.fromRGB(50, 150, 255) -- BLAU statt ROT
+                    sliderValue.TextColor3 = Color3.fromRGB(0, 150, 255)
                     sliderValue.TextSize = 14.000
                     sliderValue.TextXAlignment = Enum.TextXAlignment.Left
 
@@ -581,8 +576,8 @@ function Orion:CreateOrion(orionName)
 
                     sliderMainFrm.Name = "sliderMainFrm"
                     sliderMainFrm.Parent = sliderBtn
-                    sliderMainFrm.BackgroundColor3 = Color3.fromRGB(30, 120, 220) -- BLAU statt ROT
-                    sliderMainFrm.BorderColor3 = Color3.fromRGB(30, 120, 220)
+                    sliderMainFrm.BackgroundColor3 = Color3.fromRGB(0, 100, 255)
+                    sliderMainFrm.BorderColor3 = Color3.fromRGB(0, 100, 255)
                     sliderMainFrm.BorderSizePixel = 0
                     sliderMainFrm.Size = UDim2.new(0, 0, 0, 10)
 
@@ -656,7 +651,7 @@ function Orion:CreateOrion(orionName)
                             mainCorner.Parent = keybindFrame
 
                             TextButton.Parent = keybindFrame
-                            TextButton.BackgroundColor3 = Color3.fromRGB(30, 120, 220) -- BLAU statt ROT
+                            TextButton.BackgroundColor3 = Color3.fromRGB(0, 100, 255)
                             TextButton.Position = UDim2.new(0.017766498, 0, 0.166666672, 0)
                             TextButton.Size = UDim2.new(0, 76, 0, 27)
                             TextButton.Font = Enum.Font.GothamSemibold
@@ -713,6 +708,8 @@ function Orion:CreateOrion(orionName)
                                 local TextBox = Instance.new("TextBox")
                                 local UIListLayout_2 = Instance.new("UIListLayout")
 
+                                --Properties:
+
                                 textBoxFrame.Name = "textBoxFrame"
                                 textBoxFrame.Parent = newPage
                                 textBoxFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
@@ -737,7 +734,7 @@ function Orion:CreateOrion(orionName)
 
                                 texboxInner.Name = "texboxInner"
                                 texboxInner.Parent = textBoxFrame
-                                texboxInner.BackgroundColor3 = Color3.fromRGB(30, 120, 220) -- BLAU statt ROT
+                                texboxInner.BackgroundColor3 = Color3.fromRGB(0, 100, 255)
                                 texboxInner.Position = UDim2.new(0.017766498, 0, 0.166666672, 0)
                                 texboxInner.Size = UDim2.new(0, 141, 0, 27)
 
@@ -830,7 +827,7 @@ function Orion:CreateOrion(orionName)
                                     dropdownItem.Size = UDim2.new(0, 291, 0, 41)
                                     dropdownItem.Font = Enum.Font.GothamSemibold
                                     dropdownItem.Text = dInfo
-                                    dropdownItem.TextColor3 = Color3.fromRGB(50, 150, 255) -- BLAU statt ROT
+                                    dropdownItem.TextColor3 = Color3.fromRGB(0, 150, 255)
                                     dropdownItem.TextSize = 14.000
                                     dropdownItem.TextXAlignment = Enum.TextXAlignment.Left
 
@@ -840,7 +837,7 @@ function Orion:CreateOrion(orionName)
                                     ImageButton.Position = UDim2.new(0.89974618, 0, 0.238095239, 0)
                                     ImageButton.Size = UDim2.new(0, 27, 0, 21)
                                     ImageButton.Image = "rbxassetid://5165666242"
-                                    ImageButton.ImageColor3 = Color3.fromRGB(30, 120, 220) -- BLAU statt ROT
+                                    ImageButton.ImageColor3 = Color3.fromRGB(0, 100, 255)
                                     ImageButton.MouseButton1Click:Connect(function()
                                         if isDropped then
                                             isDropped = false
@@ -873,7 +870,7 @@ function Orion:CreateOrion(orionName)
 
                                         optionBtn.Name = "optionBtn"
                                         optionBtn.Parent = dropDownFrame
-                                        optionBtn.BackgroundColor3 = Color3.fromRGB(10, 80, 160) -- BLAU statt ROT
+                                        optionBtn.BackgroundColor3 = Color3.fromRGB(0, 70, 180)
                                         optionBtn.Position = UDim2.new(0.0253807101, 0, 0.311258286, 0)
                                         optionBtn.Size = UDim2.new(0, 377, 0, 39)
                                         optionBtn.Font = Enum.Font.GothamSemibold
